@@ -64,7 +64,7 @@ describe('Vote proposal', async () => {
         ]);
 
         const tx = await program.methods
-            .voting(owner.publicKey, campaignIndex, true)
+            .voting(true)
             .accounts({
                 authority: firstDonor.publicKey,
                 donor: donorDerivedAccount.publicKey,
@@ -93,7 +93,7 @@ describe('Vote proposal', async () => {
         ]);
 
         const tx = await program.methods
-            .voting(owner.publicKey, campaignIndex, false)
+            .voting(false)
             .accounts({
                 authority: secondDonor.publicKey,
                 donor: donorDerivedAccount.publicKey,

@@ -43,7 +43,7 @@ describe('Initialize proposal', async () => {
 
     it('Init proposal', async () => {
         const tx = await program.methods
-            .initProposal(campaignIndex)
+            .initProposal()
             .accounts({
                 owner: owner.publicKey,
                 campaign: campaignDerivedAccount.publicKey,

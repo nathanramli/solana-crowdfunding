@@ -16,43 +16,32 @@ pub mod solcare {
     pub fn init_campaign(
         ctx: Context<InitCampaign>,
         increment: u32,
-        held_duration: i64,
         target_amount: u64,
     ) -> Result<()> {
-        init_campaign::handler(ctx, increment, held_duration, target_amount)
+        init_campaign::handler(ctx, increment, target_amount)
     }
 
-    pub fn init_donor(ctx: Context<InitDonor>, campaign_owner: Pubkey, index: u32) -> Result<()> {
-        init_donor::handler(ctx, campaign_owner, index)
+    pub fn init_donor(ctx: Context<InitDonor>) -> Result<()> {
+        init_donor::handler(ctx)
     }
 
-    pub fn init_proposal(ctx: Context<InitProposal>, index: u32) -> Result<()> {
-        init_proposal::handler(ctx, index)
+    pub fn init_proposal(ctx: Context<InitProposal>) -> Result<()> {
+        init_proposal::handler(ctx)
     }
 
-    pub fn donate(
-        ctx: Context<Donate>,
-        campaign_owner: Pubkey,
-        index: u32,
-        amount: u64,
-    ) -> Result<()> {
-        donate::handler(ctx, campaign_owner, index, amount)
+    pub fn donate(ctx: Context<Donate>, amount: u64) -> Result<()> {
+        donate::handler(ctx, amount)
     }
 
-    pub fn voting(
-        ctx: Context<Voting>,
-        campaign_owner: Pubkey,
-        index: u32,
-        agree: bool,
-    ) -> Result<()> {
-        voting::handler(ctx, campaign_owner, index, agree)
+    pub fn voting(ctx: Context<Voting>, agree: bool) -> Result<()> {
+        voting::handler(ctx, agree)
     }
 
-    pub fn claim_funds(ctx: Context<ClaimFunds>, index: u32) -> Result<()> {
-        claim_funds::handler(ctx, index)
+    pub fn claim_funds(ctx: Context<ClaimFunds>) -> Result<()> {
+        claim_funds::handler(ctx)
     }
 
-    pub fn refund(ctx: Context<Refund>, campaign_owner: Pubkey, index: u32) -> Result<()> {
-        refund::handler(ctx, campaign_owner, index)
+    pub fn refund(ctx: Context<Refund>) -> Result<()> {
+        refund::handler(ctx)
     }
 }

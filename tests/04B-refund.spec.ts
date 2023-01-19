@@ -89,7 +89,7 @@ describe('Refund campaign', async () => {
         ]);
 
         const tx = await program.methods
-            .refund(owner.publicKey, campaignIndex)
+            .refund()
             .accounts({
                 authority: firstDonor.publicKey,
                 donor: donorDerivedAccount.publicKey,
@@ -116,7 +116,7 @@ describe('Refund campaign', async () => {
         ]);
 
         const tx = await program.methods
-            .refund(owner.publicKey, campaignIndex)
+            .refund()
             .accounts({
                 authority: secondDonor.publicKey,
                 donor: donorDerivedAccount.publicKey,

@@ -3,7 +3,7 @@ use crate::errors::CustomError;
 use crate::state::{Campaign, Proposal};
 use anchor_lang::prelude::*;
 
-pub fn handler(ctx: Context<InitProposal>, _index: u32) -> Result<()> {
+pub fn handler(ctx: Context<InitProposal>) -> Result<()> {
     ctx.accounts.campaign.status = STATUS_VOTING;
 
     ctx.accounts.proposal.campaign = ctx.accounts.campaign.key();
@@ -16,16 +16,14 @@ pub fn handler(ctx: Context<InitProposal>, _index: u32) -> Result<()> {
 }
 
 #[derive(Accounts)]
-#[instruction(index: u32)]
 pub struct InitProposal<'info> {
     #[account(mut)]
     pub owner: Signer<'info>,
 
     #[account(
         mut,
-        seeds = [CAMPAIGN_SEED, owner.key().as_ref(), index.to_le_bytes().as_ref()],
-        bump,
         constraint = campaign.status == STATUS_FILLED @ CustomError::CampaignIsNotFilled,
+        constraint = campaign.owner == owner.key(),
     )]
     pub campaign: Account<'info, Campaign>,
 

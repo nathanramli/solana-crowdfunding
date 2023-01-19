@@ -6,18 +6,7 @@ use crate::constant::*;
 use crate::errors::CustomError;
 use crate::state::Campaign;
 
-pub fn handler(
-    ctx: Context<InitCampaign>,
-    _increment: u32,
-    held_duration: i64,
-    target_amount: u64,
-) -> Result<()> {
-    let a_day_in_seconds = 24 * 60 * 60;
-    require!(
-        held_duration <= 90 * a_day_in_seconds && held_duration >= 7 * a_day_in_seconds,
-        CustomError::InvalidHeldDuration
-    );
-
+pub fn handler(ctx: Context<InitCampaign>, _increment: u32, target_amount: u64) -> Result<()> {
     require!(
         target_amount % 10u64.pow(USDC_DECIMALS as u32) == 0,
         CustomError::InvalidTargetAmount
@@ -27,7 +16,8 @@ pub fn handler(
     ctx.accounts.campaign.owner = ctx.accounts.owner.key();
     ctx.accounts.campaign.campaign_vault = ctx.accounts.campaign_vault.key();
     ctx.accounts.campaign.funded_amount = 0;
-    ctx.accounts.campaign.held_duration = held_duration;
+    let a_day_in_seconds = 24 * 60 * 60;
+    ctx.accounts.campaign.held_duration = 90 * a_day_in_seconds;
     ctx.accounts.campaign.target_amount = target_amount;
     ctx.accounts.campaign.status = STATUS_ACTIVE;
 

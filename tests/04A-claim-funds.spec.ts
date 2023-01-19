@@ -68,7 +68,7 @@ describe('Claim funds', async () => {
         );
 
         const tx = await program.methods
-            .claimFunds(campaignIndex)
+            .claimFunds()
             .accounts({
                 owner: owner.publicKey,
                 campaign: campaignDerivedAccount.publicKey,

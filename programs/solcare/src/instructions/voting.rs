@@ -3,12 +3,7 @@ use crate::errors::CustomError;
 use crate::state::{Campaign, Donor, Proposal, Vote};
 use anchor_lang::prelude::*;
 
-pub fn handler(
-    ctx: Context<Voting>,
-    _campaign_owner: Pubkey,
-    _index: u32,
-    agree: bool,
-) -> Result<()> {
+pub fn handler(ctx: Context<Voting>, agree: bool) -> Result<()> {
     if agree {
         ctx.accounts.proposal.agree += ctx.accounts.donor.donated_amount;
     } else {
@@ -25,7 +20,6 @@ pub fn handler(
 }
 
 #[derive(Accounts)]
-#[instruction(campaign_owner: Pubkey, index: u32)]
 pub struct Voting<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,
@@ -47,8 +41,6 @@ pub struct Voting<'info> {
     pub vote: Account<'info, Vote>,
 
     #[account(
-        seeds = [CAMPAIGN_SEED, campaign_owner.key().as_ref(), index.to_le_bytes().as_ref()],
-        bump,
         constraint = campaign.status == STATUS_VOTING @ CustomError::CampaignIsNotInVotingPeriod,
     )]
     pub campaign: Account<'info, Campaign>,
@@ -57,6 +49,7 @@ pub struct Voting<'info> {
         mut,
         seeds = [PROPOSAL_SEED, campaign.key().as_ref()],
         bump,
+        constraint = (clock.unix_timestamp <= proposal.created_at + proposal.duration) @ CustomError::CampaignIsNotInVotingPeriod,
     )]
     pub proposal: Account<'info, Proposal>,
 

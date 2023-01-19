@@ -52,12 +52,9 @@ describe('Initialize campaign', () => {
             true
         );
 
-        const heldDuration = new anchor.BN(dayInSeconds * 7);
-
         const tx = await program.methods
             .initCampaign(
                 campaignIndex,
-                heldDuration,
                 new anchor.BN(1 * Math.pow(10, usdcMint.decimals))
             )
             .accounts({
@@ -80,7 +77,6 @@ describe('Initialize campaign', () => {
 
         assert.isNotNull(campaign);
         assert(campaign.campaignVault.equals(campaignVault));
-        assert(campaign.heldDuration.eq(heldDuration));
 
         console.log('create campaign tx: ' + tx);
     });

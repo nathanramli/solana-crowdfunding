@@ -124,7 +124,7 @@ describe('Donate to campaign', async () => {
             )) === null
         ) {
             const initDonor = await program.methods
-                .initDonor(owner.publicKey, campaignIndex)
+                .initDonor()
                 .accounts({
                     authority: firstDonor.publicKey,
                     campaign: campaignDerivedAccount.publicKey,
@@ -137,11 +137,7 @@ describe('Donate to campaign', async () => {
         }
 
         const tx = await program.methods
-            .donate(
-                owner.publicKey,
-                campaignIndex,
-                new anchor.BN(0.5 * Math.pow(10, usdcMint.decimals))
-            )
+            .donate(new anchor.BN(0.5 * Math.pow(10, usdcMint.decimals)))
             .preInstructions(preIxs)
             .accounts({
                 authority: firstDonor.publicKey,
@@ -176,7 +172,7 @@ describe('Donate to campaign', async () => {
             )) === null
         ) {
             const initDonor = await program.methods
-                .initDonor(owner.publicKey, campaignIndex)
+                .initDonor()
                 .accounts({
                     authority: secondDonor.publicKey,
                     campaign: campaignDerivedAccount.publicKey,
@@ -189,11 +185,7 @@ describe('Donate to campaign', async () => {
         }
 
         const tx = await program.methods
-            .donate(
-                owner.publicKey,
-                campaignIndex,
-                new anchor.BN(0.5 * Math.pow(10, usdcMint.decimals))
-            )
+            .donate(new anchor.BN(0.5 * Math.pow(10, usdcMint.decimals)))
             .preInstructions(preIxs)
             .accounts({
                 authority: secondDonor.publicKey,

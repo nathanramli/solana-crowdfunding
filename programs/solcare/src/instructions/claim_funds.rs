@@ -5,7 +5,7 @@ use anchor_lang::prelude::*;
 use anchor_spl::associated_token::AssociatedToken;
 use anchor_spl::token::{self, Mint, Token, TokenAccount, Transfer};
 
-pub fn handler(ctx: Context<ClaimFunds>, _index: u32) -> Result<()> {
+pub fn handler(ctx: Context<ClaimFunds>) -> Result<()> {
     if !((ctx.accounts.proposal.agree == 0 && ctx.accounts.proposal.disagree == 0)
         || ctx.accounts.proposal.agree > ctx.accounts.proposal.disagree)
     {
@@ -38,9 +38,8 @@ pub struct ClaimFunds<'info> {
 
     #[account(
         mut,
-        seeds = [CAMPAIGN_SEED, owner.key().as_ref(), index.to_le_bytes().as_ref()],
-        bump,
         constraint = campaign.status == STATUS_VOTING @ CustomError::CampaignIsNotInVotingPeriod,
+        constraint = campaign.owner == owner.key(),
     )]
     pub campaign: Account<'info, Campaign>,
 

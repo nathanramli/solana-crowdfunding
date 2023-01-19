@@ -3,7 +3,7 @@ use crate::errors::CustomError;
 use crate::state::{Campaign, Donor};
 use anchor_lang::prelude::*;
 
-pub fn handler(ctx: Context<InitDonor>, _owner_campaign: Pubkey, _index: u32) -> Result<()> {
+pub fn handler(ctx: Context<InitDonor>) -> Result<()> {
     ctx.accounts.donor.campaign = ctx.accounts.campaign.key();
     ctx.accounts.donor.donor = ctx.accounts.authority.key();
     ctx.accounts.donor.refunded = false;
@@ -14,14 +14,11 @@ pub fn handler(ctx: Context<InitDonor>, _owner_campaign: Pubkey, _index: u32) ->
 }
 
 #[derive(Accounts)]
-#[instruction(campaign_owner: Pubkey, index: u32)]
 pub struct InitDonor<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,
 
     #[account(
-        seeds = [CAMPAIGN_SEED, campaign_owner.key().as_ref(), index.to_le_bytes().as_ref()],
-        bump,
         constraint = campaign.status == STATUS_ACTIVE @ CustomError::CampaignIsNotActive,
         constraint = campaign.created_at + campaign.held_duration > clock.unix_timestamp @ CustomError::CampaignFailedToRaiseFunds,
     )]

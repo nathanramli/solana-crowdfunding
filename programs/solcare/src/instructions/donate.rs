@@ -6,12 +6,7 @@ use crate::constant::*;
 use crate::errors::CustomError;
 use crate::state::{Campaign, Donor};
 
-pub fn handler(
-    ctx: Context<Donate>,
-    _campaign_owner: Pubkey,
-    _index: u32,
-    amount: u64,
-) -> Result<()> {
+pub fn handler(ctx: Context<Donate>, amount: u64) -> Result<()> {
     if ctx.accounts.donor_token.amount < amount {
         return err!(CustomError::BalanceIsNotEnough);
     }
@@ -34,15 +29,12 @@ pub fn handler(
 }
 
 #[derive(Accounts)]
-#[instruction(campaign_owner: Pubkey, index: u32)]
 pub struct Donate<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,
 
     #[account(
         mut,
-        seeds = [CAMPAIGN_SEED, campaign_owner.key().as_ref(), index.to_le_bytes().as_ref()],
-        bump,
         has_one = campaign_vault,
         constraint = campaign.status == STATUS_ACTIVE @ CustomError::CampaignIsNotActive,
         constraint = campaign.created_at + campaign.held_duration > clock.unix_timestamp @ CustomError::CampaignFailedToRaiseFunds,
