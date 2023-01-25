@@ -29,8 +29,8 @@ pub enum CustomError {
     #[msg("Can't claim fund")]
     CantClaimFund,
 
-    #[msg("Can't do refund")]
-    CantDoRefund,
+    #[msg("Not in refundable state")]
+    NotInRefundableState,
 
     #[msg("Donation has been refunded")]
     DonationHasBeenRefunded,

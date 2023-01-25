@@ -5,10 +5,8 @@ use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, Token, TokenAccount, Transfer};
 
 pub fn handler(ctx: Context<Refund>) -> Result<()> {
-    if (ctx.accounts.proposal.agree == 0 && ctx.accounts.proposal.disagree == 0)
-        || (ctx.accounts.proposal.agree > ctx.accounts.proposal.disagree)
-    {
-        return err!(CustomError::CantDoRefund);
+    if !ctx.accounts.is_campaign_failed_to_raise() && !ctx.accounts.is_proposal_declined() {
+        return err!(CustomError::NotInRefundableState);
     }
 
     let campaign_authority_seed = &[
@@ -53,9 +51,6 @@ pub struct Refund<'info> {
     #[account(address = USDC_MINT_PUBKEY)]
     pub usdc_mint: Account<'info, Mint>,
 
-    #[account(
-        constraint = campaign.status == STATUS_VOTING @ CustomError::CampaignIsNotInVotingPeriod,
-    )]
     pub campaign: Account<'info, Campaign>,
 
     #[account(
@@ -71,12 +66,13 @@ pub struct Refund<'info> {
     )]
     pub campaign_vault: Account<'info, TokenAccount>,
 
+    /// CHECK: PDA validation is enough
     #[account(
         seeds = [PROPOSAL_SEED, campaign.key().as_ref()],
         bump,
-        constraint = ((proposal.agree + proposal.disagree >= campaign.funded_amount) || (clock.unix_timestamp > proposal.created_at + proposal.duration)) @ CustomError::VotingHasNotEnd,
+        // constraint = ((proposal.agree + proposal.disagree >= campaign.funded_amount) || (clock.unix_timestamp > proposal.created_at + proposal.duration)) @ CustomError::VotingHasNotEnd,
     )]
-    pub proposal: Account<'info, Proposal>,
+    pub proposal: AccountInfo<'info>,
 
     pub clock: Sysvar<'info, Clock>,
 
@@ -93,5 +89,24 @@ impl<'info> Refund<'info> {
             to: self.donor_token.to_account_info(),
         };
         CpiContext::new(self.token_program.to_account_info(), cpi_accounts)
+    }
+
+    fn is_proposal_declined(&self) -> bool {
+        if self.campaign.status == STATUS_VOTING {
+            if let Ok(proposal) = Account::<Proposal>::try_from(&self.proposal) {   
+                if (proposal.agree + proposal.disagree >= self.campaign.funded_amount) || (self.clock.unix_timestamp > proposal.created_at + proposal.duration)
+                {
+                    return !(proposal.agree == 0 && proposal.disagree == 0) && proposal.agree < proposal.disagree
+                }
+            }
+        }
+        false
+    }
+
+    fn is_campaign_failed_to_raise(&self) -> bool {
+        if self.campaign.status == STATUS_ACTIVE {
+            return self.clock.unix_timestamp > self.campaign.created_at + self.campaign.held_duration
+        }
+        false
     }
 }

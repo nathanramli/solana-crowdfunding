@@ -31,7 +31,6 @@ pub fn handler(ctx: Context<ClaimFunds>) -> Result<()> {
 }
 
 #[derive(Accounts)]
-#[instruction(index: u32)]
 pub struct ClaimFunds<'info> {
     #[account(mut)]
     pub owner: Signer<'info>,
