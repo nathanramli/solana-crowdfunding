@@ -2,9 +2,9 @@
 seeds = false
 skip-lint = false
 [programs.localnet]
-solcare = "DqBjFvgYa8drGBcKdSSQ51jLEWWnr6z14MzXKxGu5JvX"
+solcare = "7Ji9oG6aVk8SJutzwRP3nFZJYXtq7FaDqkVWvmBbc4z"
 [programs.devnet]
-solcare = "DqBjFvgYa8drGBcKdSSQ51jLEWWnr6z14MzXKxGu5JvX"
+solcare = "7Ji9oG6aVk8SJutzwRP3nFZJYXtq7FaDqkVWvmBbc4z"
 
 [registry]
 url = "https://api.apr.dev"

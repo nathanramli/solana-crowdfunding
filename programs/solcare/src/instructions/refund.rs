@@ -96,7 +96,7 @@ impl<'info> Refund<'info> {
             if let Ok(proposal) = Account::<Proposal>::try_from(&self.proposal) {   
                 if (proposal.agree + proposal.disagree >= self.campaign.funded_amount) || (self.clock.unix_timestamp > proposal.created_at + proposal.duration)
                 {
-                    return !(proposal.agree == 0 && proposal.disagree == 0) && proposal.agree < proposal.disagree
+                    return (self.campaign.funded_amount / 5 > proposal.agree + proposal.disagree) || (proposal.agree < proposal.disagree)
                 }
             }
         }

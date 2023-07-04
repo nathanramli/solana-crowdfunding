@@ -7,7 +7,7 @@ pub mod state;
 
 use instructions::*;
 
-declare_id!("DqBjFvgYa8drGBcKdSSQ51jLEWWnr6z14MzXKxGu5JvX");
+declare_id!("7Ji9oG6aVk8SJutzwRP3nFZJYXtq7FaDqkVWvmBbc4z");
 
 #[program]
 pub mod solcare {

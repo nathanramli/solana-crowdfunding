@@ -6,8 +6,7 @@ use anchor_spl::associated_token::AssociatedToken;
 use anchor_spl::token::{self, Mint, Token, TokenAccount, Transfer};
 
 pub fn handler(ctx: Context<ClaimFunds>) -> Result<()> {
-    if !((ctx.accounts.proposal.agree == 0 && ctx.accounts.proposal.disagree == 0)
-        || ctx.accounts.proposal.agree > ctx.accounts.proposal.disagree)
+    if (ctx.accounts.campaign.funded_amount / 5 > ctx.accounts.proposal.agree + ctx.accounts.proposal.disagree) || (ctx.accounts.proposal.agree < ctx.accounts.proposal.disagree)
     {
         return err!(CustomError::CantClaimFund);
     }
